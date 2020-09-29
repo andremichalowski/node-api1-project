@@ -48,5 +48,28 @@ server.get('/api/users/:id', (request, response) => {
     })
 })
 
+// PUT request by ID
+server.put('/api/users/:id', (request, response) => {
+  const id = request.params.id;
+  const userData = request.body;
+  if(userData.name && userData.bio) {
+    Users.update(id, userData)
+      .then(user => {
+        response.status(200).json(userData);
+      })
+      .catch(error => { 
+        console.log(error)
+        response.status(500).json
+        ({errorMessage: "The user information could not be modified."}) // error w/server
+      })
+  } else if ( id !== Users.id ) {
+    response.status(404).send({ message: "The user with the specified ID does not exist."})
+  } else { // missing name or bio
+    response.status(400).send({ errorMessage: "Please provide name and bio for the user."})
+  } // missing name or bio
+})
+
 const port = 3000
 server.listen(port, ()=> console.log(`Now listening on port ${port}`)); 
+
+console.log(Users)

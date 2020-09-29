@@ -22,5 +22,31 @@ server.post('/api/users', (request, response) => {
     } // missing "name + bio" error + error saving to database
 })
 
+// GET request
+server.get('/api/users', (request, response) => {
+  Users.find()
+    .then(users => {
+      response.status(200).json(users)
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(500).json({errorMessage: "The users information could not be retrieved."}) // error
+    })
+})
+
+// GET specific user by ID
+server.get('/api/users/:id', (request, response) => {
+  const id = request.params.id
+  Users.findById(id)
+    .then(user => {
+      console.log(user.id)
+      response.status(200).json(user);
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(404).json({message: "The user with the specified ID does not exist."})
+    })
+})
+
 const port = 3000
-server.listen(port, ()=> console.log(`now listening on port ${port}`)); 
+server.listen(port, ()=> console.log(`Now listening on port ${port}`)); 
